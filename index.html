@@ -26,6 +26,11 @@
     .slip-thumb{width:58px;height:72px;border-radius:8px;border:1px solid #dbe3ee;object-fit:cover;background:#f8fafc}.hidden{display:none!important}.view{display:none}.view.active{display:block}
     .modal{position:fixed;inset:0;background:rgba(2,6,23,.56);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.show{display:flex}.modal-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:white;border-radius:24px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h3{margin:0;color:var(--navy)}.x{border:0;background:#f1f5f9;width:36px;height:36px;border-radius:10px}.qr{width:min(360px,100%);margin:18px auto;border-radius:18px;background:white;border:1px solid #dbe3ee;box-shadow:0 10px 30px rgba(15,23,42,.10);overflow:hidden}.qr img{display:block;width:100%;height:auto}.center{text-align:center}.upload-box{border:2px dashed #b8c6d8;border-radius:18px;padding:18px;text-align:center;background:#f8fafc}.upload-box img{max-width:100%;max-height:290px;border-radius:14px;margin-top:12px}.receipt{border:1px solid #dbe3ee;border-radius:18px;padding:22px;background:white}.receipt .rbrand{text-align:center;color:var(--navy);font-weight:900;font-size:22px}.receipt table{width:100%;border-collapse:collapse;margin-top:16px}.receipt td{padding:8px 0;border-bottom:1px dashed #e2e8f0}.receipt td:last-child{text-align:right;font-weight:700}.receipt .ok{text-align:center;color:var(--green);font-weight:900;font-size:18px;margin-top:16px}
     .footer-note{text-align:center;color:#94a3b8;font-size:11px;padding:14px 0 28px}
+
+    .switch button{position:relative}
+    .admin-alert{display:none;position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#dc2626;color:#fff;font-size:12px;font-weight:800;line-height:22px;text-align:center;box-shadow:0 0 0 3px #fff;z-index:5}
+    .admin-alert.show{display:block;animation:pulseBadge 1.5s infinite}
+    @keyframes pulseBadge{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
     @media(max-width:780px){.grid{grid-template-columns:1fr}.admin-stats{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}.summary .metric:first-child{grid-column:1/-1}.brand small{display:none}.topbar{padding:11px 12px}.switch button{padding:7px 9px;font-size:12px}main{padding:12px}.hero-head{padding:18px}.bike{font-size:42px}.actions{grid-template-columns:1fr}.card{padding:15px;border-radius:18px}}
     @media print{body *{visibility:hidden}.modal.show,.modal.show *{visibility:visible}.modal{position:absolute;background:white}.modal-card{box-shadow:none;max-height:none}.modal-head,.print-hide{display:none!important}}
   </style>
@@ -34,7 +39,7 @@
 <div class="app">
   <header class="topbar">
     <div class="brand"><div class="logo">P</div><div><h1>Purim Payment Tracker</h1><small>ติดตามการชำระอย่างเป็นระบบ</small></div></div>
-    <div class="switch"><button id="customerTab" class="active">ลูกค้า</button><button id="adminTab">แอดมิน</button></div>
+    <div class="switch"><button id="customerTab" class="active">ลูกค้า</button><button id="adminTab">แอดมิน<span id="adminAlert" class="admin-alert">0</span></button></div>
   </header>
   <main>
     <section id="customerView" class="view active">
@@ -158,7 +163,7 @@ async function loadAdmin(forcePin=false){
 function render(){
  const remain=state.total-state.paid,pct=Math.min(100,Math.round(state.paid/state.total*100));
  $('paidSummary').textContent=money(state.paid);$('remainSummary').textContent=money(remain);$('progressBar').style.width=pct+'%';$('progressText').textContent=pct+'%';
- $('adminPaid').textContent=state.paid.toLocaleString('th-TH');$('adminRemain').textContent=remain.toLocaleString('th-TH');$('waitCount').textContent=state.pending.length;
+ $('adminPaid').textContent=state.paid.toLocaleString('th-TH');$('adminRemain').textContent=remain.toLocaleString('th-TH');$('waitCount').textContent=state.pending.length;const aa=$('adminAlert');if(aa){aa.textContent=state.pending.length>99?'99+':state.pending.length;aa.classList.toggle('show',state.pending.length>0);}
  $('historyCount').textContent=state.history.length+' รายการ';
  $('historyList').innerHTML=[...state.history].reverse().map(h=>`<div class="history-item"><div class="icon">✓</div><div class="item-main"><strong>${h.date} • ${money(h.amount)}</strong><small>ยอดสะสม ${money(h.cum)}</small></div><span class="badge paid">ชำระแล้ว</span><button class="link" onclick="showReceipt('${h.id}')">ดูใบเสร็จ</button></div>`).join('')||'<div class="notice">ยังไม่มีประวัติการชำระ</div>';
  $('adminHistory').innerHTML=[...state.history].reverse().map(h=>`<div class="history-item"><div class="icon">🧾</div><div class="item-main"><strong>${h.id}</strong><small>${h.date} • ${money(h.amount)}</small></div><button class="link" onclick="showReceipt('${h.id}')">เปิด</button></div>`).join('')||'<div class="notice">ยังไม่มีใบเสร็จ</div>';
