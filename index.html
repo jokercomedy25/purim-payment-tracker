@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Purim Payment Tracker</title>
+  <meta name="theme-color" content="#0B2A5B" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#0B2A5B;--navy2:#123d7a;--orange:#ff7a1a;--green:#16a34a;--red:#dc2626;--muted:#64748b;--bg:#f5f7fb;--card:#fff;--line:#e6eaf0;--shadow:0 12px 35px rgba(11,42,91,.10)}
+    *{box-sizing:border-box} body{margin:0;font-family:'Noto Sans Thai',system-ui,sans-serif;background:linear-gradient(180deg,#f7faff 0,#f4f6f9 100%);color:#0f172a}
+    button,input{font:inherit} button{cursor:pointer}
+    .app{max-width:1180px;margin:0 auto;min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+    .brand{display:flex;align-items:center;gap:10px}.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--navy),#1d4ed8);display:grid;place-items:center;color:white;font-weight:900;box-shadow:0 8px 20px rgba(11,42,91,.2)}.brand h1{font-size:17px;margin:0;color:var(--navy)}.brand small{display:block;color:var(--muted);font-size:11px}
+    .switch{display:flex;background:#eef2f7;border-radius:12px;padding:4px;gap:4px}.switch button{border:0;background:transparent;border-radius:9px;padding:8px 12px;color:#475569;font-weight:700}.switch button.active{background:white;color:var(--navy);box-shadow:0 2px 10px rgba(15,23,42,.08)}
+    main{padding:18px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.stack{display:grid;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:18px}.hero{overflow:hidden;padding:0}.hero-head{background:linear-gradient(135deg,#092554,#164f95);color:white;padding:22px;display:flex;justify-content:space-between;gap:16px;align-items:center}.bike{font-size:54px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.15))}.hero h2{margin:0;font-size:22px}.hero p{margin:5px 0 0;color:#dbeafe}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}.metric{background:#f8fafc;border:1px solid #edf1f5;border-radius:16px;padding:14px}.metric span{font-size:12px;color:var(--muted)}.metric strong{font-size:21px;display:block;margin-top:4px}.green{color:var(--green)}.orange{color:var(--orange)}
+    .progress-wrap{padding:0 16px 18px}.progress-line{height:12px;background:#e8edf4;border-radius:999px;overflow:hidden}.progress-bar{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:999px;width:15%;transition:.35s}.progress-note{display:flex;justify-content:space-between;margin-top:7px;font-size:12px;color:var(--muted)}
+    .title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.title h3{margin:0;font-size:17px;color:var(--navy)}.title small{color:var(--muted)}
+    .amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.amount{border:1.5px solid #dbe3ee;background:white;padding:12px;border-radius:14px;font-weight:800;color:var(--navy)}.amount.active{background:var(--navy);color:white;border-color:var(--navy)}
+    .custom{display:flex;align-items:center;border:1px solid #dbe3ee;border-radius:14px;margin-top:10px;padding:0 12px;background:white}.custom input{flex:1;border:0;outline:0;padding:13px 0;min-width:0}.custom span{color:var(--muted)}
+    .btn{border:0;border-radius:14px;padding:13px 15px;font-weight:800}.btn.primary{background:linear-gradient(135deg,#0b2a5b,#1555a5);color:white}.btn.orange{background:linear-gradient(135deg,#ff7a1a,#ff9a3d);color:white}.btn.ghost{background:white;border:1px solid #cad5e3;color:var(--navy)}.btn.success{background:var(--green);color:white}.btn.danger{background:#fff1f2;color:#b91c1c;border:1px solid #fecdd3}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .history-item,.payment-item{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #eef2f6}.history-item:last-child,.payment-item:last-child{border-bottom:0}.icon{width:40px;height:40px;border-radius:12px;background:#ecfdf5;display:grid;place-items:center}.item-main{flex:1}.item-main strong{display:block}.item-main small{color:var(--muted)}.badge{font-size:11px;font-weight:800;border-radius:999px;padding:5px 9px}.badge.paid{background:#dcfce7;color:#15803d}.badge.wait{background:#fff7ed;color:#c2410c}.badge.reject{background:#fee2e2;color:#b91c1c}.link{border:0;background:transparent;color:#1555a5;font-weight:700;padding:5px}
+    .admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.admin-stat{padding:16px;border-radius:17px;background:white;border:1px solid var(--line)}.admin-stat span{font-size:11px;color:var(--muted)}.admin-stat strong{display:block;margin-top:5px;font-size:18px}.notice{background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:16px;color:#9a3412;margin-bottom:12px}
+    .slip-thumb{width:58px;height:72px;border-radius:8px;border:1px solid #dbe3ee;object-fit:cover;background:#f8fafc}.hidden{display:none!important}.view{display:none}.view.active{display:block}
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,.56);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.show{display:flex}.modal-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:white;border-radius:24px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h3{margin:0;color:var(--navy)}.x{border:0;background:#f1f5f9;width:36px;height:36px;border-radius:10px}.qr{width:230px;aspect-ratio:1;margin:18px auto;border-radius:18px;background:repeating-conic-gradient(#0f172a 0 25%,#fff 0 50%) 0/24px 24px;border:16px solid white;box-shadow:0 0 0 1px #dbe3ee}.center{text-align:center}.upload-box{border:2px dashed #b8c6d8;border-radius:18px;padding:18px;text-align:center;background:#f8fafc}.upload-box img{max-width:100%;max-height:290px;border-radius:14px;margin-top:12px}.receipt{border:1px solid #dbe3ee;border-radius:18px;padding:22px;background:white}.receipt .rbrand{text-align:center;color:var(--navy);font-weight:900;font-size:22px}.receipt table{width:100%;border-collapse:collapse;margin-top:16px}.receipt td{padding:8px 0;border-bottom:1px dashed #e2e8f0}.receipt td:last-child{text-align:right;font-weight:700}.receipt .ok{text-align:center;color:var(--green);font-weight:900;font-size:18px;margin-top:16px}
+    .footer-note{text-align:center;color:#94a3b8;font-size:11px;padding:14px 0 28px}
+    @media(max-width:780px){.grid{grid-template-columns:1fr}.admin-stats{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}.summary .metric:first-child{grid-column:1/-1}.brand small{display:none}.topbar{padding:11px 12px}.switch button{padding:7px 9px;font-size:12px}main{padding:12px}.hero-head{padding:18px}.bike{font-size:42px}.actions{grid-template-columns:1fr}.card{padding:15px;border-radius:18px}}
+    @media print{body *{visibility:hidden}.modal.show,.modal.show *{visibility:visible}.modal{position:absolute;background:white}.modal-card{box-shadow:none;max-height:none}.modal-head,.print-hide{display:none!important}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">P</div><div><h1>Purim Payment Tracker</h1><small>ติดตามการชำระอย่างเป็นระบบ</small></div></div>
+    <div class="switch"><button id="customerTab" class="active">ลูกค้า</button><button id="adminTab">แอดมิน</button></div>
+  </header>
+  <main>
+    <section id="customerView" class="view active">
+      <div class="grid">
+        <div class="stack">
+          <div class="card hero">
+            <div class="hero-head"><div><h2>SUZUKI V-STROM 650</h2><p>ผู้ชำระ: จ่าหม่อง</p></div><div class="bike">🏍️</div></div>
+            <div class="summary">
+              <div class="metric"><span>ราคาทั้งหมด</span><strong>100,000 บาท</strong></div>
+              <div class="metric"><span>ชำระแล้ว</span><strong id="paidSummary" class="green">15,000 บาท</strong></div>
+              <div class="metric"><span>คงเหลือ</span><strong id="remainSummary" class="orange">85,000 บาท</strong></div>
+            </div>
+            <div class="progress-wrap"><div class="progress-line"><div id="progressBar" class="progress-bar"></div></div><div class="progress-note"><span>ความคืบหน้า</span><strong id="progressText">15%</strong></div></div>
+          </div>
+
+          <div class="card">
+            <div class="title"><h3>ชำระเงินงวดนี้</h3><small>ขั้นต่ำ 3,000 บาท</small></div>
+            <div class="amounts"><button class="amount active" data-amount="3000">3,000</button><button class="amount" data-amount="4000">4,000</button><button class="amount" data-amount="5000">5,000</button></div>
+            <div class="custom"><input id="customAmount" type="number" min="3000" placeholder="ระบุจำนวนเงินเอง"><span>บาท</span></div>
+            <div class="actions"><button id="payBtn" class="btn orange">▣ ดู QR / ชำระเงิน</button><button id="uploadBtn" class="btn ghost">⇧ อัปโหลดสลิป</button></div>
+          </div>
+
+          <div class="card">
+            <div class="title"><h3>ประวัติการชำระ</h3><small id="historyCount">3 รายการ</small></div>
+            <div id="historyList"></div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card"><div class="title"><h3>สถานะล่าสุด</h3><small>อัปเดตทันที</small></div><div id="latestStatus"><div class="notice">ยังไม่มีรายการใหม่ที่รอตรวจสอบ</div></div></div>
+          <div class="card"><div class="title"><h3>การทำงานของระบบ</h3></div><div class="history-item"><div class="icon">1</div><div class="item-main"><strong>เลือกยอดชำระ</strong><small>3,000 / 4,000 / 5,000 หรือระบุเอง</small></div></div><div class="history-item"><div class="icon">2</div><div class="item-main"><strong>โอนและส่งสลิป</strong><small>ระบบบันทึกหลักฐานทันที</small></div></div><div class="history-item"><div class="icon">3</div><div class="item-main"><strong>แอดมินยืนยัน</strong><small>ยอดคงเหลือปรับอัตโนมัติ</small></div></div><div class="history-item"><div class="icon">4</div><div class="item-main"><strong>ออกใบเสร็จ</strong><small>ดูย้อนหลังและพิมพ์ PDF ได้</small></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="adminView" class="view">
+      <div class="stack">
+        <div class="admin-stats"><div class="admin-stat"><span>ยอดทั้งหมด</span><strong>100,000</strong></div><div class="admin-stat"><span>รับแล้ว</span><strong id="adminPaid" class="green">15,000</strong></div><div class="admin-stat"><span>คงเหลือ</span><strong id="adminRemain" class="orange">85,000</strong></div><div class="admin-stat"><span>รอตรวจ</span><strong id="waitCount">0</strong></div></div>
+        <div class="card"><div class="title"><h3>🔔 รายการรอตรวจสอบ</h3><small>จ่าหม่อง</small></div><div id="adminPayments"><div class="notice">ยังไม่มีสลิปใหม่ครับ</div></div></div>
+        <div class="card"><div class="title"><h3>รายการที่ยืนยันแล้ว</h3><small>ใบเสร็จทั้งหมด</small></div><div id="adminHistory"></div></div>
+      </div>
+    </section>
+    <div class="footer-note">Purim Payment Tracker • V1 Demo • พร้อมต่อ Supabase + LINE OA</div>
+  </main>
+</div>
+
+<div id="qrModal" class="modal"><div class="modal-card"><div class="modal-head"><h3>ชำระเงินด้วย QR Code</h3><button class="x" data-close="qrModal">✕</button></div><div class="qr"></div><div class="center"><strong id="qrAmount" style="font-size:26px;color:#0B2A5B">3,000 บาท</strong><p style="color:#64748b">บัญชีรับเงิน: นาย ปุริม • ธนาคารตัวอย่าง</p><button id="goUpload" class="btn primary" style="width:100%">โอนแล้ว → อัปโหลดสลิป</button></div></div></div>
+
+<div id="uploadModal" class="modal"><div class="modal-card"><div class="modal-head"><h3>อัปโหลดสลิปการโอน</h3><button class="x" data-close="uploadModal">✕</button></div><div class="upload-box"><div>แตะเพื่อเลือกภาพสลิป</div><input id="slipInput" type="file" accept="image/*" style="margin-top:10px"><img id="slipPreview" class="hidden" alt="ตัวอย่างสลิป"></div><button id="submitSlip" class="btn success" style="width:100%;margin-top:14px" disabled>ส่งสลิปการชำระ</button></div></div>
+
+<div id="receiptModal" class="modal"><div class="modal-card"><div class="modal-head print-hide"><h3>ใบเสร็จรับชำระ</h3><button class="x" data-close="receiptModal">✕</button></div><div id="receiptBody" class="receipt"></div><div class="actions print-hide"><button class="btn primary" onclick="window.print()">พิมพ์ / บันทึก PDF</button><button class="btn ghost" data-close="receiptModal">ปิด</button></div></div></div>
+
+<script>
+const seedHistory=[
+ {id:'VST-202606-0001',date:'9 มิ.ย. 2569',amount:5000,status:'PAID',cum:5000,remain:95000},
+ {id:'VST-202607-0002',date:'9 ก.ค. 2569',amount:5000,status:'PAID',cum:10000,remain:90000},
+ {id:'VST-202608-0003',date:'9 ส.ค. 2569',amount:5000,status:'PAID',cum:15000,remain:85000}
+];
+let state=JSON.parse(localStorage.getItem('purimPaymentV1')||'null')||{paid:15000,total:100000,selected:3000,history:seedHistory,pending:[]};
+let currentSlip=null;
+const $=id=>document.getElementById(id); const money=n=>Number(n).toLocaleString('th-TH')+' บาท';
+function save(){localStorage.setItem('purimPaymentV1',JSON.stringify(state));}
+function render(){
+ const remain=state.total-state.paid, pct=Math.min(100,Math.round(state.paid/state.total*100));
+ $('paidSummary').textContent=money(state.paid); $('remainSummary').textContent=money(remain); $('progressBar').style.width=pct+'%'; $('progressText').textContent=pct+'%'; $('adminPaid').textContent=state.paid.toLocaleString('th-TH'); $('adminRemain').textContent=remain.toLocaleString('th-TH'); $('waitCount').textContent=state.pending.filter(x=>x.status==='WAITING_ADMIN').length;
+ $('historyCount').textContent=state.history.length+' รายการ';
+ $('historyList').innerHTML=[...state.history].reverse().map(h=>`<div class="history-item"><div class="icon">✓</div><div class="item-main"><strong>${h.date} • ${money(h.amount)}</strong><small>ยอดสะสม ${money(h.cum)}</small></div><span class="badge paid">ชำระแล้ว</span><button class="link" onclick="showReceipt('${h.id}')">ดูใบเสร็จ</button></div>`).join('');
+ $('adminHistory').innerHTML=[...state.history].reverse().map(h=>`<div class="history-item"><div class="icon">🧾</div><div class="item-main"><strong>${h.id}</strong><small>${h.date} • ${money(h.amount)}</small></div><button class="link" onclick="showReceipt('${h.id}')">เปิด</button></div>`).join('');
+ const waiting=state.pending.filter(x=>x.status==='WAITING_ADMIN');
+ $('latestStatus').innerHTML=waiting.length?`<div class="notice">มีรายการรอตรวจสอบ ${waiting.length} รายการ • ล่าสุด ${money(waiting[waiting.length-1].amount)}</div>`:`<div class="notice">ยังไม่มีรายการใหม่ที่รอตรวจสอบ</div>`;
+ $('adminPayments').innerHTML=waiting.length?waiting.map(p=>`<div class="payment-item"><img class="slip-thumb" src="${p.slip}" alt="slip"><div class="item-main"><strong>จ่าหม่อง • ${money(p.amount)}</strong><small>${p.date} • <span class="badge wait">รอตรวจสอบ</span></small></div><button class="btn success" onclick="approve('${p.id}')">ยืนยันรับเงิน</button><button class="btn danger" onclick="rejectPay('${p.id}')">ส่งใหม่</button></div>`).join(''):`<div class="notice">ยังไม่มีสลิปใหม่ครับ</div>`;
+ save();
+}
+function setView(v){$('customerView').classList.toggle('active',v==='customer');$('adminView').classList.toggle('active',v==='admin');$('customerTab').classList.toggle('active',v==='customer');$('adminTab').classList.toggle('active',v==='admin')}
+$('customerTab').onclick=()=>setView('customer'); $('adminTab').onclick=()=>setView('admin');
+document.querySelectorAll('.amount').forEach(b=>b.onclick=()=>{document.querySelectorAll('.amount').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.selected=Number(b.dataset.amount);$('customAmount').value='';});
+$('customAmount').oninput=e=>{const v=Number(e.target.value);if(v>=3000){state.selected=v;document.querySelectorAll('.amount').forEach(x=>x.classList.remove('active'));}};
+$('payBtn').onclick=()=>{$('qrAmount').textContent=money(state.selected);$('qrModal').classList.add('show')}; $('uploadBtn').onclick=()=>$('uploadModal').classList.add('show'); $('goUpload').onclick=()=>{$('qrModal').classList.remove('show');$('uploadModal').classList.add('show')};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.remove('show'));
+$('slipInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{currentSlip=ev.target.result;$('slipPreview').src=currentSlip;$('slipPreview').classList.remove('hidden');$('submitSlip').disabled=false};r.readAsDataURL(f)};
+$('submitSlip').onclick=()=>{if(state.selected<3000||!currentSlip)return;state.pending.push({id:'PAY-'+Date.now(),amount:state.selected,slip:currentSlip,date:new Date().toLocaleString('th-TH'),status:'WAITING_ADMIN'});currentSlip=null;$('slipInput').value='';$('slipPreview').classList.add('hidden');$('submitSlip').disabled=true;$('uploadModal').classList.remove('show');render();alert('ส่งสลิปเรียบร้อยแล้ว ระบบแจ้งแอดมินให้ตรวจสอบแล้วครับ')};
+function approve(id){const p=state.pending.find(x=>x.id===id);if(!p)return;const next=state.history.length+1;state.paid=Math.min(state.total,state.paid+p.amount);const now=new Date();const y=now.getFullYear()+543;const m=String(now.getMonth()+1).padStart(2,'0');const receipt=`VST-${y}${m}-${String(next).padStart(4,'0')}`;state.history.push({id:receipt,date:now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}),amount:p.amount,status:'PAID',cum:state.paid,remain:state.total-state.paid});p.status='PAID';render();alert('ยืนยันรับเงินแล้ว และออกใบเสร็จ '+receipt+' เรียบร้อยครับ');showReceipt(receipt)}
+function rejectPay(id){const p=state.pending.find(x=>x.id===id);if(p)p.status='NEED_RESUBMIT';render();alert('รายการถูกเปลี่ยนเป็น “ให้ส่งสลิปใหม่” แล้วครับ')}
+function showReceipt(id){const h=state.history.find(x=>x.id===id);if(!h)return;$('receiptBody').innerHTML=`<div class="rbrand">PURIM</div><div class="center" style="font-weight:800">ใบเสร็จรับชำระค่างวดรถ</div><table><tr><td>เลขที่</td><td>${h.id}</td></tr><tr><td>ผู้ชำระ</td><td>จ่าหม่อง</td></tr><tr><td>รายการ</td><td>SUZUKI V-STROM 650</td></tr><tr><td>ราคาทั้งหมด</td><td>${money(state.total)}</td></tr><tr><td>งวดนี้</td><td>${money(h.amount)}</td></tr><tr><td>ยอดสะสม</td><td>${money(h.cum)}</td></tr><tr><td>ยอดคงเหลือ</td><td>${money(h.remain)}</td></tr><tr><td>วันที่ชำระ</td><td>${h.date}</td></tr></table><div class="ok">✓ ชำระสำเร็จ</div><p class="center" style="color:#64748b;font-size:12px">ขอบคุณสำหรับการชำระเงินครับ</p>`;$('receiptModal').classList.add('show')}
+render();
+</script>
+</body>
+</html>
